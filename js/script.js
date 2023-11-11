@@ -4,6 +4,8 @@
 3. назначить обработчик событий на меню 
 */
 //TABS 
+'use strict';
+
 window.addEventListener('DOMContentLoaded', () => {
     const tabs = document.querySelectorAll('.tabheader__item'),
         tabsContent = document.querySelectorAll('.tabcontent'),
@@ -91,4 +93,32 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
     setClock('.timer', deadline);
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+        modalWindow = document.querySelector('.modal'),
+        modalBtnClose = document.querySelector('[data-close]');
+
+    function closeModal() {
+        modalWindow.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+
+    modalTrigger.forEach(item => {
+        item.addEventListener('click', () => {
+            modalWindow.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+
+            modalBtnClose.addEventListener('click', closeModal);
+
+            modalWindow.addEventListener('click', (event) => {
+                const target = event.target;
+
+                if (target === modalWindow) {
+                    closeModal();
+                }
+            })
+        });
+    });
+
 })
