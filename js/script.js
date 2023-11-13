@@ -1,8 +1,4 @@
-/* 
-1. функция которая будет скрывать табы
-2. показать нужный таб
-3. назначить обработчик событий на меню 
-*/
+
 //TABS 
 'use strict';
 
@@ -14,7 +10,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function hideTabContent(params) {
         tabsContent.forEach(item => {
-            item.style.display = 'none';
+            item.classList.add('hide');
+            item.classList.remove('show');
         });
 
         tabs.forEach(item => {
@@ -23,7 +20,9 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function showTabsContent(i = 0) {
-        tabsContent[i].style.display = 'block';
+        tabsContent[i].classList.add('show', 'fade');
+        tabsContent[i].classList.remove('hide');
+
         tabs[i].classList.add('tabheader__item_active');
     }
 
@@ -98,27 +97,45 @@ window.addEventListener('DOMContentLoaded', () => {
         modalWindow = document.querySelector('.modal'),
         modalBtnClose = document.querySelector('[data-close]');
 
-    function closeModal() {
-        modalWindow.style.display = 'none';
-        document.body.style.overflow = '';
+    function addClassHide(item) {
+        item.classList.add('hide');
+        item.classList.remove('show');
+    }
+    function addClassShow(item) {
+        item.classList.remove('hide');
+        item.classList.add('show');
     }
 
 
+    function closeModal() {
+        addClassHide(modalWindow);
+        document.body.style.overflow = '';
+    }
+
     modalTrigger.forEach(item => {
         item.addEventListener('click', () => {
-            modalWindow.style.display = 'block';
+            addClassShow(modalWindow);
+
             document.body.style.overflow = 'hidden';
 
-            modalBtnClose.addEventListener('click', closeModal);
 
-            modalWindow.addEventListener('click', (event) => {
-                const target = event.target;
-
-                if (target === modalWindow) {
-                    closeModal();
-                }
-            })
         });
     });
 
+    modalBtnClose.addEventListener('click', closeModal);
+
+    modalWindow.addEventListener('click', (event) => {
+        const target = event.target;
+
+        if (target === modalWindow) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if(event.code === 'Escape' && modalWindow.classList.contains('show')){
+            closeModal();
+        }
+    });
+    
 })
