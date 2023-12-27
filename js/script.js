@@ -244,11 +244,14 @@ function postData(form) {
         //отправляем
         request.send(json);
 
+        //проверяем статус запроса и даем обратную связь
         request.addEventListener('load', () => {
             if (request.status === 200) {
                 console.log(request.response);
                 statusMessage.textContent = message.success;
+                //сбрасываем форму
                 form.reset();
+                //удаляем появившееся сообщение о статусе 
                 setTimeout(() => {
                     statusMessage.remove();
                 }, 2000);
