@@ -99,7 +99,7 @@ window.addEventListener('DOMContentLoaded', () => {
         modalWindow = document.querySelector('.modal'),
         modalBtnClose = document.querySelector('[data-close]'),
         modalTimerId = setTimeout(openModalWindow, 5000);
- 
+
     // закрытие модального окна 
     function closeModalWindow() {
         modalWindow.classList.remove('show');
@@ -113,7 +113,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'hidden';
         clearInterval(modalTimerId);
     }
-    
+
     modalTrigger.forEach(item => {
         item.addEventListener('click', openModalWindow);
     });
@@ -207,3 +207,54 @@ window.addEventListener('DOMContentLoaded', () => {
         ".menu .container"
     ).showMenu();
 })
+
+// FORMS
+
+const forms = document.querySelectorAll('form');
+const message = {
+    loading: 'Загрузка',
+    success: 'Спасибо! Скоро мы с вами свяжемся',
+    failure: 'Что-то пошло не так, пытаемся починить :D'
+}
+
+forms.forEach(item => {
+    postData(item);
+})
+
+function postData(form) {
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        //создаем блок с уведомлением о статусе отправки формы
+        const statusMessage = document.createElement('div');
+        statusMessage.textContent = message.loading;
+        form.append(statusMessage);
+
+        //конфигурируем наш запрос после нажатия на отправить
+        const request = new XMLHttpRequest();
+        request.open('POST', 'server.php');
+        request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        const formData = new FormData(form);
+        const object = {};
+        formData.forEach(function (value, key) {
+            object[key] = value;
+        })
+        const json = JSON.stringify(object);
+        console.log(`${json} - json объект`);
+        //отправляем
+        request.send(json);
+
+        request.addEventListener('load', () => {
+            if (request.status === 200) {
+                console.log(request.response);
+                statusMessage.textContent = message.success;
+                form.reset();
+                setTimeout(() => {
+                    statusMessage.remove();
+                }, 2000);
+            } else {
+                statusMessage.textContent = message.failure;
+            }
+        })
+    });
+}
